@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ro">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Plată Reușită</title>
+    <style>
+      body {
+        font-family: "Arial", sans-serif;
+        background-color: #f0f9f0;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+      }
+      .success-container {
+        background: white;
+        padding: 2rem;
+        border-radius: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        max-width: 500px;
+        margin: 20px;
+      }
+      .success-icon {
+        font-size: 4rem;
+        color: #28a745;
+        margin-bottom: 1rem;
+      }
+      h1 {
+        color: #4a584b;
+        margin-bottom: 1rem;
+      }
+      p {
+        color: #666;
+        margin-bottom: 1.5rem;
+        line-height: 1.6;
+      }
+      .back-button {
+        background-color: #4a584b;
+        color: white;
+        padding: 12px 24px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 1rem;
+        text-decoration: none;
+        display: inline-block;
+        transition: background-color 0.3s;
+      }
+      .back-button:hover {
+        background-color: #3a4739;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="success-container">
+      <div class="success-icon">✅</div>
+      <h1>Rezervarea a fost confirmată!</h1>
+      <p>
+        Plata dumneavoastră a fost procesată cu succes. Veți primi un email de
+        confirmare în scurt timp.
+      </p>
+      <p>
+        <strong>Vă mulțumim pentru încrederea acordată!</strong>
+      </p>
+      <a href="/" class="back-button">Înapoi la pagina principală</a>
+    </div>
+
+    <script>
+      // Redirecționează automat după 10 secunde
+      setTimeout(() => {
+        window.location.href = "/";
+      }, 10000);
+    </script>
+  </body>
+</html>

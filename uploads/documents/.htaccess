@@ -1,0 +1,19 @@
+# Previne listarea directoarelor
+Options -Indexes
+
+# Previne accesul direct la fișierele PHP
+<Files "*.php">
+    Order Deny,Allow
+    Deny from all
+</Files>
+
+# Permite doar anumite tipuri de fișiere
+<FilesMatch "\.(pdf|doc|docx|xls|xlsx|txt|jpg|jpeg|png|gif|webp)$">
+    Order Allow,Deny
+    Allow from all
+</FilesMatch>
+
+# Setează headers pentru descărcare
+<FilesMatch "\.(pdf|doc|docx|xls|xlsx)$">
+    Header set Content-Disposition "attachment"
+</FilesMatch>
