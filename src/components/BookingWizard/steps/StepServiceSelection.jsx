@@ -2,8 +2,15 @@ import React, { useState, useEffect } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
 
-function StepServiceSelection({ services, formData, updateSelectedService, nextStep }) {
-  const [selectedServiceId, setSelectedServiceId] = useState(formData.serviceId || "");
+function StepServiceSelection({
+  services,
+  formData,
+  updateSelectedService,
+  nextStep,
+}) {
+  const [selectedServiceId, setSelectedServiceId] = useState(
+    formData.serviceId || ""
+  );
   const [isProcessing, setIsProcessing] = useState(false);
 
   useEffect(() => {
@@ -18,17 +25,19 @@ function StepServiceSelection({ services, formData, updateSelectedService, nextS
   const handleContinue = async () => {
     if (!selectedServiceId) {
       // Enhanced error feedback instead of alert
-      const errorMsg = document.createElement('div');
-      errorMsg.className = 'fixed top-4 right-4 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-bounce';
-      errorMsg.textContent = 'Te rugăm să selectezi un serviciu pentru a continua';
+      const errorMsg = document.createElement("div");
+      errorMsg.className =
+        "fixed top-4 right-4 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-bounce";
+      errorMsg.textContent =
+        "Te rugăm să selectezi un serviciu pentru a continua";
       document.body.appendChild(errorMsg);
-      
+
       setTimeout(() => {
         document.body.removeChild(errorMsg);
       }, 3000);
       return;
     }
-    
+
     setIsProcessing(true);
     // Simulate processing time for better UX
     setTimeout(() => {
@@ -38,9 +47,9 @@ function StepServiceSelection({ services, formData, updateSelectedService, nextS
   };
 
   const formatPrice = (price, currency = "GBP") => {
-    return new Intl.NumberFormat('en-GB', {
-      style: 'currency',
-      currency: currency
+    return new Intl.NumberFormat("en-GB", {
+      style: "currency",
+      currency: currency,
     }).format(price);
   };
 
@@ -61,11 +70,11 @@ function StepServiceSelection({ services, formData, updateSelectedService, nextS
   const getServiceGradient = (index) => {
     const gradients = [
       "from-blue-500 to-indigo-600",
-      "from-purple-500 to-pink-600", 
+      "from-purple-500 to-pink-600",
       "from-green-500 to-emerald-600",
       "from-orange-500 to-red-600",
       "from-teal-500 to-cyan-600",
-      "from-rose-500 to-pink-600"
+      "from-rose-500 to-pink-600",
     ];
     return gradients[index % gradients.length];
   };
@@ -82,7 +91,6 @@ function StepServiceSelection({ services, formData, updateSelectedService, nextS
 
       <div className="max-w-4xl w-full relative z-10">
         <div className="bg-white/95 backdrop-blur-sm rounded-2xl sm:rounded-3xl shadow-2xl p-6 sm:p-8 lg:p-10 border border-white/30">
-          
           {/* Enhanced Header */}
           <div className="text-center mb-8 sm:mb-12" data-aos="fade-down">
             {/* Step Badge */}
@@ -90,7 +98,7 @@ function StepServiceSelection({ services, formData, updateSelectedService, nextS
               <span className="w-2 h-2 bg-white rounded-full mr-2 animate-pulse"></span>
               Pasul 1 din 4 - Selectare serviciu
             </div>
-            
+
             <h2 className="text-3xl sm:text-4xl font-bold text-gray-800 mb-4">
               Selectează serviciul
               <span className="relative inline-block mx-2">
@@ -102,7 +110,8 @@ function StepServiceSelection({ services, formData, updateSelectedService, nextS
               pentru tine
             </h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Alege din serviciile noastre specializate cel care se potrivește cel mai bine nevoilor tale și ale bebelușului tău.
+              Alege din serviciile noastre specializate cel care se potrivește
+              cel mai bine nevoilor tale și ale bebelușului tău.
             </p>
           </div>
 
@@ -138,18 +147,24 @@ function StepServiceSelection({ services, formData, updateSelectedService, nextS
                           onChange={() => handleServiceSelect(service)}
                           className="w-5 h-5 text-blue-600 border-gray-300 focus:ring-blue-500 flex-shrink-0"
                         />
-                        
+
                         {/* Service Icon */}
-                        <div className={`ml-4 w-12 h-12 bg-gradient-to-r ${getServiceGradient(index)} rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300`}>
-                          <span className="text-2xl">{getServiceIcon(index)}</span>
+                        <div
+                          className={`ml-4 w-12 h-12 bg-gradient-to-r ${getServiceGradient(
+                            index
+                          )} rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300`}
+                        >
+                          <span className="text-2xl">
+                            {getServiceIcon(index)}
+                          </span>
                         </div>
                       </div>
-                      
+
                       <div className="flex-1">
                         <h3 className="text-xl sm:text-2xl font-bold text-gray-800 mb-2 group-hover:text-blue-600 transition-colors duration-300">
                           {service.name}
                         </h3>
-                        
+
                         {/* Service Tags */}
                         <div className="flex flex-wrap gap-2 mb-3">
                           <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
@@ -163,46 +178,78 @@ function StepServiceSelection({ services, formData, updateSelectedService, nextS
                         </div>
                       </div>
                     </div>
-                    
-                   <p className="text-gray-600 leading-relaxed mb-4 group-hover:text-gray-700 transition-colors duration-300 line-clamp-3 max-w-full">
-  {service.description}
-</p>
+
+                    <p className="text-gray-600 leading-relaxed mb-4 group-hover:text-gray-700 transition-colors duration-300 line-clamp-3 max-w-full">
+                      {service.description}
+                    </p>
 
                     {/* Service Features */}
                     <div className="grid grid-cols-2 gap-3 text-sm text-gray-500">
                       <div className="flex items-center">
-                        <svg className="w-4 h-4 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        <svg
+                          className="w-4 h-4 mr-2 text-green-500"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M5 13l4 4L19 7"
+                          />
                         </svg>
                         <span>Consultant certificat</span>
                       </div>
                       <div className="flex items-center">
-                        <svg className="w-4 h-4 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                        <svg
+                          className="w-4 h-4 mr-2 text-blue-500"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                          />
                         </svg>
                         <span>Confidențial 100%</span>
                       </div>
                     </div>
                   </div>
-                  
+
                   {/* Enhanced Price Section */}
                   <div className="flex justify-between items-center lg:block lg:text-center lg:ml-8">
                     <div className="lg:mb-4">
-                      <div className={`text-3xl sm:text-4xl font-bold transition-colors duration-300 ${
-                        selectedServiceId === service.id.toString() 
-                          ? 'text-blue-600' 
-                          : 'text-gray-700 group-hover:text-blue-600'
-                      }`}>
+                      <div
+                        className={`text-3xl sm:text-4xl font-bold transition-colors duration-300 ${
+                          selectedServiceId === service.id.toString()
+                            ? "text-blue-600"
+                            : "text-gray-700 group-hover:text-blue-600"
+                        }`}
+                      >
                         {formatPrice(service.price, service.currency || "GBP")}
                       </div>
                       <p className="text-sm text-gray-500 mt-1">per sesiune</p>
                     </div>
-                    
+
                     {selectedServiceId === service.id.toString() && (
                       <div className="lg:mt-4" data-aos="zoom-in">
                         <div className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-full text-sm font-bold shadow-lg animate-pulse">
-                          <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          <svg
+                            className="w-4 h-4 mr-2"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M5 13l4 4L19 7"
+                            />
                           </svg>
                           Selectat
                         </div>
@@ -227,7 +274,8 @@ function StepServiceSelection({ services, formData, updateSelectedService, nextS
                 Nu sunt servicii disponibile momentan
               </h3>
               <p className="text-gray-500 mb-6 max-w-md mx-auto">
-                Ne pare rău, dar în acest moment nu avem servicii disponibile pentru rezervare. Te rugăm să revii mai târziu.
+                Ne pare rău, dar în acest moment nu avem servicii disponibile
+                pentru rezervare. Te rugăm să revii mai târziu.
               </p>
               <button className="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-6 py-3 rounded-full font-semibold hover:shadow-lg transition-all duration-300">
                 Contactează-ne direct
@@ -259,7 +307,7 @@ function StepServiceSelection({ services, formData, updateSelectedService, nextS
                 </div>
               </div>
             </div>
-            
+
             {/* Enhanced Continue Button */}
             <button
               onClick={handleContinue}
@@ -279,8 +327,18 @@ function StepServiceSelection({ services, formData, updateSelectedService, nextS
                 ) : selectedServiceId ? (
                   <>
                     Continuă cu programarea
-                    <svg className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                    <svg
+                      className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform duration-300"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M13 7l5 5m0 0l-5 5m5-5H6"
+                      />
                     </svg>
                   </>
                 ) : (
@@ -294,20 +352,50 @@ function StepServiceSelection({ services, formData, updateSelectedService, nextS
           <div className="mt-8 pt-6 border-t border-gray-100">
             <div className="flex flex-wrap justify-center items-center gap-6 text-sm text-gray-500">
               <div className="flex items-center">
-                <svg className="w-5 h-5 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                <svg
+                  className="w-5 h-5 mr-2 text-green-500"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"
+                  />
                 </svg>
                 <span>Plată 100% securizată</span>
               </div>
               <div className="flex items-center">
-                <svg className="w-5 h-5 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                <svg
+                  className="w-5 h-5 mr-2 text-blue-500"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                  />
                 </svg>
                 <span>500+ mame ajutate</span>
               </div>
               <div className="flex items-center">
-                <svg className="w-5 h-5 mr-2 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                <svg
+                  className="w-5 h-5 mr-2 text-purple-500"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
                 </svg>
                 <span>Suport 24/7</span>
               </div>

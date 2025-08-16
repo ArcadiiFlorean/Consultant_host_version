@@ -11,20 +11,39 @@ export default defineConfig({
         changeOrigin: true,
         secure: true,
       },
-      // Adaugă proxy pentru /admin
       "/admin": {
         target: "https://marina-cociug.com",
         changeOrigin: true,
         secure: true,
         configure: (proxy, options) => {
-          proxy.on('error', (err, req, res) => {
-            console.log('Proxy error:', err);
+          proxy.on("error", (err, req, res) => {
+            console.log("Proxy error:", err);
           });
-          proxy.on('proxyReq', (proxyReq, req, res) => {
-            console.log('Proxying request:', req.method, req.url);
+          proxy.on("proxyReq", (proxyReq, req, res) => {
+            console.log("Proxying request:", req.method, req.url);
           });
-        }
-      }
+        },
+      },
+    },
+  },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          // Doar librăriile pe care le folosiți sigur
+          vendor: ["react", "react-dom", "react-router-dom"],
+          stripe: ["@stripe/stripe-js", "@stripe/react-stripe-js"],
+          icons: ["lucide-react", "react-icons"],
+        },
+      },
+    },
+    chunkSizeWarningLimit: 600,
+    minify: "terser",
+    terserOptions: {
+      compress: {
+        drop_console: true,
+        drop_debugger: true,
+      },
     },
   },
 });

@@ -96,27 +96,36 @@ function BookingWizard() {
     }
   }, [services]);
 
-  const fetchServices = async () => {
+ const fetchServices = async () => {
     try {
       setLoading(true);
-      const response = await fetch(
-        "https://marina-cociug.com/api/services.php"
-      );
+      // CORECTARE: Folosește URL relativ pentru proxy
+      const response = await fetch("/api/services.php");
+
+      console.log("=== BOOKING WIZARD API DEBUG ===");
+      console.log("Response status:", response.status);
+      console.log("Response headers:", response.headers.get("content-type"));
 
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        const errorText = await response.text();
+        console.log("Error response:", errorText);
+        throw new Error(`HTTP error! status: ${response.status} - ${errorText.substring(0, 100)}`);
       }
 
       const data = await response.json();
+      console.log("BookingWizard API Response:", data);
+      console.log("Services count:", data.data?.length);
 
-      if (data.success) {
+      if (data.success && data.data && data.data.length > 0) {
         setServices(data.data);
         setError("");
+        console.log("✅ Services loaded successfully in BookingWizard");
       } else {
-        setError(data.message || "Eroare la încărcarea serviciilor");
+        console.warn("⚠️ No services returned from API");
+        setError(data.message || "Nu sunt servicii disponibile");
       }
     } catch (err) {
-      console.error("Eroare la preluarea serviciilor:", err);
+      console.error("❌ Error fetching services in BookingWizard:", err);
       setError("Nu s-au putut încărca serviciile disponibile");
 
       // În caz de eroare, verifică dacă avem parametri URL și îi folosește
@@ -186,12 +195,12 @@ function BookingWizard() {
 
         setServices(fallbackServices);
         setError(""); // Resetează eroarea dacă avem fallback
+        console.log("🔄 Using fallback services");
       }
     } finally {
       setLoading(false);
     }
   };
-
   const nextStep = () => {
     setIsTransitioning(true);
     setTimeout(() => {

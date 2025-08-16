@@ -8,12 +8,31 @@ if (!isset($_SESSION['admin_logged_in'])) {
 include 'db.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['slots'])) {
-    // ✅ SOLUȚIA: Nu șterge sloturile rezervate!
-    // Opțiunea 1: Dacă ai coloana 'status' în tabel
-    $pdo->exec("DELETE FROM available_slots WHERE status = 'available'");
+    // Calculează intervalul săptămânii curente AICI PRIMA DATĂ
+    $startDate = new DateTime();
+    $endDate = new DateTime();
+    $endDate->modify('+6 days');
+    $weekStart = $startDate->format('Y-m-d');
+    $weekEnd = $endDate->format('Y-m-d');
     
-    // Opțiunea 2: Dacă NU ai coloana 'status', decomentează linia de jos și comentează cea de sus:
-    // $pdo->exec("DELETE FROM available_slots WHERE id NOT IN (SELECT DISTINCT slot_id FROM bookings WHERE slot_id IS NOT NULL)");
+    // DEBUG: Informații înainte de salvare
+    echo "<div style='background:yellow; padding:15px; margin:10px; border-left:5px solid orange;'>";
+    echo "<strong>🔍 DEBUG INFO:</strong><br>";
+    echo "📅 Săptămâna procesată: <strong>$weekStart</strong> la <strong>$weekEnd</strong><br>";
+    echo "📨 Sloturi trimise din formular: <strong>" . count($_POST['slots']) . "</strong><br>";
+    
+    // Verifică ce este în baza de date înainte
+    $beforeTotal = $pdo->query("SELECT COUNT(*) FROM available_slots")->fetchColumn();
+    $beforeWeek = $pdo->prepare("SELECT COUNT(*) FROM available_slots WHERE slot_date BETWEEN ? AND ?");
+    $beforeWeek->execute([$weekStart, $weekEnd]);
+    $beforeWeekCount = $beforeWeek->fetchColumn();
+    
+    echo "📊 În baza de date ÎNAINTE - Total: <strong>$beforeTotal</strong>, Săptămâna curentă: <strong>$beforeWeekCount</strong><br>";
+    echo "</div>";
+    
+// ✅ ȘTERGE DOAR sloturile din săptămâna curentă (fără status)
+$deleteStmt = $pdo->prepare("DELETE FROM available_slots WHERE slot_date BETWEEN ? AND ?");
+$deleteStmt->execute([$weekStart, $weekEnd]);
 
     foreach ($_POST['slots'] as $slot) {
         list($date, $time) = explode('|', $slot);
@@ -30,9 +49,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['slots'])) {
         }
     }
 
+    // DEBUG: Informații după salvare
+    echo "<div style='background:#d4edda; padding:15px; margin:10px; border-left:5px solid #28a745;'>";
+    $afterTotal = $pdo->query("SELECT COUNT(*) FROM available_slots")->fetchColumn();
+    $afterWeek = $pdo->prepare("SELECT COUNT(*) FROM available_slots WHERE slot_date BETWEEN ? AND ?");
+    $afterWeek->execute([$weekStart, $weekEnd]);
+    $afterWeekCount = $afterWeek->fetchColumn();
+    
+    echo "✅ În baza de date DUPĂ - Total: <strong>$afterTotal</strong>, Săptămâna curentă: <strong>$afterWeekCount</strong><br>";
+    echo "🎯 Diferența: Total " . ($afterTotal - $beforeTotal) . ", Săptămâna " . ($afterWeekCount - $beforeWeekCount);
+    echo "</div>";
+
     $message = "✅ Program actualizat cu succes! Rezervările existente au fost păstrate.";
 }
-
 // Preluare sloturi existente
 $existingSlots = $pdo->query("SELECT CONCAT(slot_date, '|', slot_time) as slot FROM available_slots")->fetchAll(PDO::FETCH_COLUMN);
 
@@ -412,7 +441,19 @@ $daysOfWeek = [
                 <form method="POST" id="scheduleForm">
                     <div class="week-container">
                         <?php
-                        $startDate = new DateTime();
+                     $startDate = new DateTime();
+$endDate = new DateTime();
+$endDate->modify('+6 days');
+$weekStart = $startDate->format('Y-m-d');
+$weekEnd = $endDate->format('Y-m-d');
+
+// ✅ PREIA DOAR sloturile din săptămâna curentă
+$existingSlotsStmt = $pdo->prepare("SELECT CONCAT(slot_date, '|', slot_time) as slot FROM available_slots WHERE slot_date BETWEEN ? AND ?");
+$existingSlotsStmt->execute([$weekStart, $weekEnd]);
+$existingSlots = $existingSlotsStmt->fetchAll(PDO::FETCH_COLUMN);
+
+// Pentru afișarea contorului corect
+$currentWeekSlotsCount = count($existingSlots);
                         $selectedCount = 0;
                         
                         for ($d = 0; $d < 7; $d++) {
@@ -478,7 +519,7 @@ $daysOfWeek = [
     </div>
     
     <div class="total-selected" id="totalSelected">
-        📊 <span id="totalCount"><?= count($existingSlots) ?></span> sloturi selectate
+       📊 <span id="totalCount"><?= $currentWeekSlotsCount ?></span> sloturi selectate
     </div>
 
     <script>
