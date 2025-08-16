@@ -15,20 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['slots'])) {
     $weekStart = $startDate->format('Y-m-d');
     $weekEnd = $endDate->format('Y-m-d');
     
-    // DEBUG: Informații înainte de salvare
-    echo "<div style='background:yellow; padding:15px; margin:10px; border-left:5px solid orange;'>";
-    echo "<strong>🔍 DEBUG INFO:</strong><br>";
-    echo "📅 Săptămâna procesată: <strong>$weekStart</strong> la <strong>$weekEnd</strong><br>";
-    echo "📨 Sloturi trimise din formular: <strong>" . count($_POST['slots']) . "</strong><br>";
-    
-    // Verifică ce este în baza de date înainte
-    $beforeTotal = $pdo->query("SELECT COUNT(*) FROM available_slots")->fetchColumn();
-    $beforeWeek = $pdo->prepare("SELECT COUNT(*) FROM available_slots WHERE slot_date BETWEEN ? AND ?");
-    $beforeWeek->execute([$weekStart, $weekEnd]);
-    $beforeWeekCount = $beforeWeek->fetchColumn();
-    
-    echo "📊 În baza de date ÎNAINTE - Total: <strong>$beforeTotal</strong>, Săptămâna curentă: <strong>$beforeWeekCount</strong><br>";
-    echo "</div>";
+
     
 // ✅ ȘTERGE DOAR sloturile din săptămâna curentă (fără status)
 $deleteStmt = $pdo->prepare("DELETE FROM available_slots WHERE slot_date BETWEEN ? AND ?");
@@ -49,16 +36,7 @@ $deleteStmt->execute([$weekStart, $weekEnd]);
         }
     }
 
-    // DEBUG: Informații după salvare
-    echo "<div style='background:#d4edda; padding:15px; margin:10px; border-left:5px solid #28a745;'>";
-    $afterTotal = $pdo->query("SELECT COUNT(*) FROM available_slots")->fetchColumn();
-    $afterWeek = $pdo->prepare("SELECT COUNT(*) FROM available_slots WHERE slot_date BETWEEN ? AND ?");
-    $afterWeek->execute([$weekStart, $weekEnd]);
-    $afterWeekCount = $afterWeek->fetchColumn();
-    
-    echo "✅ În baza de date DUPĂ - Total: <strong>$afterTotal</strong>, Săptămâna curentă: <strong>$afterWeekCount</strong><br>";
-    echo "🎯 Diferența: Total " . ($afterTotal - $beforeTotal) . ", Săptămâna " . ($afterWeekCount - $beforeWeekCount);
-    echo "</div>";
+   
 
     $message = "✅ Program actualizat cu succes! Rezervările existente au fost păstrate.";
 }
